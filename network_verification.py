@@ -7,8 +7,9 @@ import argparse
 import os
 
 
-def do (cmd):
-    if (os.system(cmd)):
+def do (cmd, ignore=False):
+    error_code = os.system(cmd)
+    if (error_code and not ignore):
         print "Can't do command:", cmd
         exit(1)
 
@@ -53,6 +54,7 @@ parser.add_argument('-d', '--distribute', action="store_true", default=False, de
 parser.add_argument('-a', '--apply-network-setup', action="store_true", default=False, dest="apply_network_setup", help="Run network setup on all the nodes")
 parser.add_argument('-r', '--run-command', action="store", dest="run_command", help="Run some command on all the nodes")
 parser.add_argument('-t', '--test', action="store_true", default=False, dest="runtest", help="Run test on all the nodes")
+parser.add_argument('-i', '--ignore-errors', action="store_true", default=False, dest="ignore_errors", help="Don't stop if some tests fail")
 
 args = parser.parse_args()
 
@@ -144,4 +146,4 @@ for node in nodes_list:
        do("ssh {0} {1}".format(node, args.run_command))
  
     if args.runtest:
-       do("ssh {0} {1}".format(node, testcmd))
+       do("ssh {0} {1}".format(node, testcmd), args.ignore_errors)
