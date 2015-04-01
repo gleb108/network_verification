@@ -15,21 +15,20 @@ def do (cmd):
 
 def delete_admin_ip_gen(admin_ip):
     if admin_ip:
-        result = "admin_ipaddr = `ip addr show | grep {} | awk '{{print $2}}'`\n".format(admin_ip)
-        result += "admin_interface = `ip addr show | grep {} | awk '{{print $7}}'`\n".format(admin_ip)
+        result = "admin_ipaddr = `ip addr show | grep {0} | awk '{{print $2}}'`\n".format(admin_ip)
+        result += "admin_interface = `ip addr show | grep {0} | awk '{{print $7}}'`\n".format(admin_ip)
         result += "ip addr del $admin_ipaddr dev $admin_interface\n" 
     return result
 
 
 def bond_setup_gen(bond, mode, slaves, assign_admin_ip=False):
-
-    result = 'modprobe bonding mode={} miimon=100\nifconfig {} up\n'.format(mode, bond)
+    result = 'modprobe bonding mode={0} miimon=100\nifconfig {1} up\n'.format(mode, bond)
 
     for slave in slaves:
         result += 'ifenslave {0} {1}\n'.format(bond, slave)
          
     if assign_admin_ip:
-        result += 'ip addr add $admin_ipaddr dev {}\n'.format(bond)
+        result += 'ip addr add $admin_ipaddr dev {0}\n'.format(bond)
 
     return result
 
@@ -43,7 +42,7 @@ def vlan_create_gen(vlan_dict):
 
 def ip_assign_gen(interface, ip_addr, netmask):
     result = 'ip addr add {0}/{1} dev {2}\n'.format(ip_addr, netmask, interface)
-    result += 'ip link set up dev {}\n'.format(interface)
+    result += 'ip link set up dev {0}\n'.format(interface)
     return result
 
 #parsing CLI arguments       
@@ -66,7 +65,10 @@ bond = parser.get("bond", "name")
 bond_mode = parser.get("bond", "mode")
 bond_slaves = parser.get("bond", "slaves")
 bond_slaves_list = bond_slaves.replace(' ','').split(',')
-bond_assign_admin_ip = bool(parser.get("bond", "assign_admin_ip"))
+
+bond_assign_admin_ip = False
+if parser.has_option("bond", "assign_admin_ip"):
+    bond_assign_admin_ip = bool(parser.get("bond", "assign_admin_ip"))
 
 vlan_dict = {} 
 vlans = parser.items("vlan")
@@ -94,7 +96,7 @@ for     network in ip.values():
     
     #checking if we have enough ip addresses for all the nodes
     if len(net) < len(nodes_list):
-        raise NameError("Network {} isn't enough for {} nodes".format(network,len(nodes_list)))
+        raise NameError("Network {0} isn't enough for {1} nodes".format(network,len(nodes_list)))
 
 
 
@@ -124,17 +126,18 @@ for node in nodes_list:
               script += ip_assign_gen(interface, current_ip_addr, netmask)   
 
     if args.show_scripts:
+       print '----------- node {0} -----------'.format(node)
        print script
        exit
 
     if args.distribute:
        f = open('tmp.tmp','w')
        f.write(script)
-       f.close
-       do("chmod 755 tmp.tmp; scp tmp.tmp {}:network_setup.sh".format(node))
+       f.close()
+       do("chmod 755 tmp.tmp; scp tmp.tmp {0}:network_setup.sh".format(node))
 
     if args.run_network_setup:
-       do("ssh {} ./network_setup.sh".format(node))
+       do("ssh {0} ./network_setup.sh".format(node))
 
  
     if args.runtest:
