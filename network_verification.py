@@ -50,7 +50,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-s', '--show-scripts', action="store_true", default=False, dest="show_scripts", help="Show scripts and exit")
 parser.add_argument('-c', '--config', action="store", default="config.ini", dest="config", help="Config file")
 parser.add_argument('-d', '--distribute', action="store_true", default=False, dest="distribute", help="Distribute bash scripts on all the nodes")
-parser.add_argument('-r', '--run-network-setup', action="store_true", default=False, dest="run_network_setup", help="Run network setup on all the nodes")
+parser.add_argument('-a', '--apply-network-setup', action="store_true", default=False, dest="apply_network_setup", help="Run network setup on all the nodes")
+parser.add_argument('-r', '--run-command', action="store", dest="run_command", help="Run some command on all the nodes")
 parser.add_argument('-t', '--test', action="store_true", default=False, dest="runtest", help="Run test on all the nodes")
 
 args = parser.parse_args()
@@ -136,9 +137,11 @@ for node in nodes_list:
        f.close()
        do("chmod 755 tmp.tmp; scp tmp.tmp {0}:network_setup.sh".format(node))
 
-    if args.run_network_setup:
+    if args.apply_network_setup:
        do("ssh {0} ./network_setup.sh".format(node))
 
+    if args.run_command:
+       do("ssh {0} {1}".format(node, args.run_command))
  
     if args.runtest:
        do("ssh {0} {1}".format(node, testcmd))
