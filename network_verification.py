@@ -146,4 +146,5 @@ for node in nodes_list:
        do("ssh {0} {1}".format(node, args.run_command))
  
     if args.runtest:
+       print '\n\n\n################ node {0} ###############'.format(node)
        do("ssh {0} {1}".format(node, testcmd), args.ignore_errors)
