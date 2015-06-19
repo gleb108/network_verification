@@ -5,6 +5,7 @@ from ConfigParser import SafeConfigParser
 from netaddr import IPNetwork, IPAddress
 import argparse
 import os
+import sys
 
 
 def do (cmd, ignore=False):
@@ -143,8 +144,11 @@ for node in nodes_list:
        do("ssh {0} ./network_setup.sh".format(node))
 
     if args.run_command:
+       print '\n\n\n################ node {0} ###############'.format(node)
+       sys.stdout.flush()
        do("ssh {0} {1}".format(node, args.run_command))
  
     if args.runtest:
        print '\n\n\n################ node {0} ###############'.format(node)
+       sys.stdout.flush()
        do("ssh {0} {1}".format(node, testcmd), args.ignore_errors)
