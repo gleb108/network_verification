@@ -65,10 +65,18 @@ parser.read(args.config)
 nodes = parser.get("main", "nodes")
 nodes_list = nodes.replace(' ','').split(',')
 
-bond = parser.get("bond", "name")
-bond_mode = parser.get("bond", "mode")
-bond_slaves = parser.get("bond", "slaves")
-bond_slaves_list = bond_slaves.replace(' ','').split(',')
+bond = False
+if parser.has_option("bond", "name"):
+   bond = parser.get("bond", "name")
+
+bond_mode= False
+if parser.has_option("bond", "mode"):
+   bond_mode = parser.get("bond", "mode")
+
+bond_slaves = False
+if parser.has_option("bond", "slaves"):
+   bond_slaves = parser.get("bond", "slaves")
+   bond_slaves_list = bond_slaves.replace(' ','').split(',')
 
 bond_assign_admin_ip = False
 if parser.has_option("bond", "assign_admin_ip"):
