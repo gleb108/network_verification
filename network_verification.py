@@ -24,7 +24,10 @@ def delete_admin_ip_gen(admin_ip):
 
 
 def bond_setup_gen(bond, mode, slaves, assign_admin_ip=False):
-    result = 'modprobe bonding mode={0} miimon=100\nifconfig {1} up\n'.format(mode, bond)
+    if mode=='4':
+        result = 'modprobe bonding mode={0} miimon=100 lacp_rate=1\nifconfig {1} up\n'.format(mode, bond)
+    else:
+        result = 'modprobe bonding mode={0} miimon=100\nifconfig {1} up\n'.format(mode, bond)
 
     for slave in slaves:
         result += 'ifenslave {0} {1}\n'.format(bond, slave)
