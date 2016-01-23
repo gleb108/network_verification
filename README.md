@@ -3,6 +3,7 @@
 It supports linux bonding and vlans. It uses <i>ssh/scp</i> to run commands on boostrap nodes.
 It works with the nodes in turns not in parallel.
 
+Limitation: You can create and check only 1 bond now. 
 
 # How to test network settings with network_verification.py.
 
