@@ -9,7 +9,7 @@ Limitation: You can create and check only 1 bond now.
 
 1) You supposed to have Fuel and nodes that booted by PXE in a bootstrap mode.
 
-2) You describe desirable network configuration in small INI file.
+2) You desirable network configuration in small INI file.
    You can specify node list (ip addresses), linux bonds, vlans, ip subnets and command to test connectivity.
    Please, see the example.
 
